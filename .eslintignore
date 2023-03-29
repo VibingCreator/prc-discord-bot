@@ -1,0 +1,5 @@
+# eslint configuration file
+.eslintrc.js
+
+# build output
+dist
