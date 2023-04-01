@@ -1,34 +1,15 @@
-import "dotenv/config";
 import { ModalSubmitInteraction } from "discord.js";
-import gitea from "../../../gitea/client";
-import { CreateIssueOption } from "gitea-api";
+import * as modals from "../../modals/";
 
 export async function handler(interaction: ModalSubmitInteraction) {
-  if (interaction.customId === "giteaIssue") {
-    const title = interaction.fields.getTextInputValue("giteaIssueTitle");
-    const description = interaction.fields.getTextInputValue(
-      "giteaIssueDescription"
-    );
-
-    const body: CreateIssueOption = {
-      title: title,
-      body: description,
-    };
-
-    try {
-      await gitea.issue.issueCreateIssue({
-        owner: process.env.GITEA_USERNAME,
-        repo: process.env.GITEA_REPOSITORY,
-        body: body,
-      });
-    } catch (error) {
-      console.error(error);
+  switch (interaction.customId) {
+    case "giteaIssue": {
+      await modals.giteaIssue.handler(interaction);
+      break;
     }
 
-    try {
-      await interaction.reply("Your issue has been submitted!");
-    } catch (error) {
-      console.error(error);
+    default: {
+      break;
     }
   }
 }
