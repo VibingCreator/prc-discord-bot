@@ -2,6 +2,7 @@ import "dotenv/config";
 import { ModalSubmitInteraction, AwaitReactionsOptions } from "discord.js";
 import gitea from "../../gitea/client";
 import { CreateIssueOption } from "gitea-api";
+import discord from "../client";
 
 export async function handler(interaction: ModalSubmitInteraction) {
   const title = interaction.fields.getTextInputValue("giteaIssueTitle");
@@ -22,8 +23,9 @@ export async function handler(interaction: ModalSubmitInteraction) {
       filter: (reaction, user) => {
         if (user.bot) return false;
 
-        const isAdmin =
-          reaction.message.member?.permissions.has("Administrator") ?? false;
+        const guild = discord.guilds.cache.get(process.env.DISCORD_GUILD_ID);
+        const member = guild?.members.cache.get(user.id);
+        const isAdmin = member?.permissions.has("Administrator") ?? false;
 
         return (
           isAdmin &&
