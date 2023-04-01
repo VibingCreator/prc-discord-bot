@@ -1,17 +1,21 @@
 import discord from "../client";
-import { Events } from "discord.js";
-import * as commands from "../commands";
+import { Events, InteractionType } from "discord.js";
+import * as handlers from "../handlers";
 
 discord.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) {
-    return;
-  }
+  switch (interaction.type) {
+    case InteractionType.ApplicationCommand: {
+      await handlers.interactionCreate.applicationCommand.handler(interaction);
+      break;
+    }
 
-  const command = commands[interaction.commandName as keyof typeof commands];
+    case InteractionType.ModalSubmit: {
+      handlers.interactionCreate.modalSubmit.handler(interaction);
+      break;
+    }
 
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    console.error(error);
+    default: {
+      break;
+    }
   }
 });
