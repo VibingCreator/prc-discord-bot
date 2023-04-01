@@ -10,7 +10,7 @@ discord.on(Events.InteractionCreate, async (interaction) => {
     }
 
     case InteractionType.ModalSubmit: {
-      handlers.interactionCreate.modalSubmit.handler(interaction);
+      await handlers.interactionCreate.modalSubmit.handler(interaction);
       break;
     }
 
