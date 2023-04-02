@@ -2,20 +2,21 @@ import discord from "../client";
 import { Events, InteractionType } from "discord.js";
 import * as handlers from "../handlers";
 
+const interactionTypesToName = {
+  [InteractionType.ApplicationCommand]:
+    handlers.interactionCreate.applicationCommand,
+  [InteractionType.ModalSubmit]: handlers.interactionCreate.modalSubmit,
+};
+
 discord.on(Events.InteractionCreate, async (interaction) => {
-  switch (interaction.type) {
-    case InteractionType.ApplicationCommand: {
-      await handlers.interactionCreate.applicationCommand.handler(interaction);
-      break;
-    }
+  const handler =
+    interactionTypesToName[
+      interaction.type as keyof typeof interactionTypesToName
+    ].handler;
 
-    case InteractionType.ModalSubmit: {
-      await handlers.interactionCreate.modalSubmit.handler(interaction);
-      break;
-    }
-
-    default: {
-      break;
-    }
+  try {
+    await handler(interaction);
+  } catch (error) {
+    console.error(error);
   }
 });
