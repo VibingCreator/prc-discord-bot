@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { ModalSubmitInteraction, AwaitReactionsOptions } from "discord.js";
 import gitea from "../../gitea/client";
 import { CreateIssueOption } from "gitea-api";

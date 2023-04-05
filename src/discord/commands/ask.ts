@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { SlashCommandBuilder, CommandInteraction } from "discord.js";
 import openai from "../../openai/client";
 

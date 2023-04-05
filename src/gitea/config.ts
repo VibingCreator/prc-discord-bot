@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 const config = {
   BASE: process.env.GITEA_BASE_URL,
   WITH_CREDENTIALS: true,

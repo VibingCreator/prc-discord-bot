@@ -1,4 +1,3 @@
-import "dotenv/config";
 import discord from "./client";
 import "./events";
 

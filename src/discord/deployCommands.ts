@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { Routes } from "discord.js";
 import rest from "./rest";
 import * as commandModules from "./commands";

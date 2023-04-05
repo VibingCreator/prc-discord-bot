@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { Configuration } from "openai";
 
 const config = new Configuration({
