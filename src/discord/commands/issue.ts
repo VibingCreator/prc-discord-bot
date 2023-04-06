@@ -31,9 +31,5 @@ export async function execute(interaction: CommandInteraction) {
     new ActionRowBuilder<TextInputBuilder>().addComponents(descriptionInput)
   );
 
-  try {
-    await interaction.showModal(modal);
-  } catch (error) {
-    console.error(error);
-  }
+  await interaction.showModal(modal);
 }
