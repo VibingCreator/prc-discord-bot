@@ -12,7 +12,7 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: CommandInteraction) {
-  const question = interaction.options.get("question");
+  const question = interaction.options.get("question", true);
 
   await interaction.deferReply();
 
@@ -20,7 +20,7 @@ export async function execute(interaction: CommandInteraction) {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       max_tokens: 500,
-      prompt: question?.value as string,
+      prompt: question.value as string,
     });
 
     await interaction.followUp(completion.data.choices[0].text ?? "");
