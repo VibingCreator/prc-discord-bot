@@ -1,3 +1,3 @@
-export * as ping from "./ping";
-export * as issue from "./issue";
-export * as ask from "./ask";
+export * from "./ping";
+export * from "./issue";
+export * from "./ask";

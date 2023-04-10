@@ -1,24 +1,14 @@
-import { Routes } from "discord.js";
 import rest from "./rest";
-import * as commandModules from "./commands";
+import slashCommandsDataJson from "./slashCommandsDataJson";
+import { Guild, Routes } from "discord.js";
 
-export default async function deployCommands() {
-  const commands = [];
-
-  for (const command in commandModules) {
-    commands.push(
-      commandModules[command as keyof typeof commandModules].data.toJSON()
-    );
-  }
-
+export default async function deployCommands(guild: Guild) {
   try {
     await rest.put(
-      Routes.applicationGuildCommands(
-        process.env.DISCORD_CLIENT_ID,
-        process.env.DISCORD_GUILD_ID
-      ),
-      { body: commands }
+      Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, guild.id),
+      { body: slashCommandsDataJson }
     );
+    console.log(`Commands has been deployed to ${guild.name}!`);
   } catch (error) {
     console.error(error);
   }

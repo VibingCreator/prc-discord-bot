@@ -1,6 +1,11 @@
-import config from "./config";
-import { Client } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 
-const discord = new Client(config);
+const discord = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+  ],
+});
 
 export default discord;
