@@ -99,6 +99,14 @@ discord.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
+discord.on(Events.GuildCreate, async (guild) => {
+  try {
+    await deployCommands(guild);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 discord
   .login(process.env.DISCORD_SECRET)
   .then(() => {
