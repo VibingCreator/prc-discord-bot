@@ -1,8 +1,8 @@
 import discord from "./discord/client";
 import * as slashCommands from "./discord/commands";
+import * as handlers from "./discord/handlers";
 import deployCommands from "./discord/deployCommands";
 import { Events } from "discord.js";
-import gitea from "./gitea/client";
 
 discord.once(Events.ClientReady, async (client) => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
@@ -32,66 +32,46 @@ discord.on(Events.InteractionCreate, async (interaction) => {
   }
 
   if (interaction.isModalSubmit()) {
-    switch (interaction.customId) {
-      case "giteaIssue": {
-        const title = interaction.fields.getTextInputValue("giteaIssueTitle");
-        const description = interaction.fields.getTextInputValue(
-          "giteaIssueDescription"
-        );
+    const modalId = interaction.customId.split(":")[0];
 
-        try {
-          const message = await interaction.reply({
-            content: `\`\`\`${title}\`\`\`\`\`\`${description}\`\`\``,
-            fetchReply: true,
-          });
+    const modalHandler =
+      handlers.modals[modalId as keyof typeof handlers.modals];
 
-          await message?.react("✅");
-          await message?.react("❌");
+    try {
+      await modalHandler(interaction);
+    } catch (error) {
+      console.error(error);
+    }
 
-          const reaction = await message?.awaitReactions({
-            filter: (reaction, user) => {
-              if (user.bot) return false;
+    return;
+  }
 
-              const guild = discord.guilds.cache.get(message.guildId as string);
-              const member = guild?.members.cache.get(user.id);
-              const isAdmin = member?.permissions.has("Administrator") ?? false;
+  if (interaction.isMessageComponent()) {
+    if (interaction.isButton()) {
+      const buttonId = interaction.customId.split(":")[0];
 
-              return (
-                isAdmin &&
-                (reaction.emoji.name === "✅" || reaction.emoji.name === "❌")
-              );
-            },
-            max: 1,
-          });
+      const buttonHandler =
+        handlers.buttons[buttonId as keyof typeof handlers.buttons];
 
-          const emoji = reaction?.first()?.emoji.name;
-
-          if (emoji === "✅") {
-            try {
-              await gitea.issue.issueCreateIssue({
-                owner: process.env.GITEA_USERNAME,
-                repo: process.env.GITEA_REPOSITORY,
-                body: {
-                  title: title,
-                  body: description,
-                },
-              });
-              await message?.delete();
-            } catch (error) {
-              console.error(error);
-            }
-          } else {
-            await message?.delete();
-          }
-        } catch (error) {
-          console.error(error);
-        }
-        break;
+      try {
+        await buttonHandler(interaction);
+      } catch (error) {
+        console.error(error);
       }
 
-      default: {
-        console.log(interaction.customId);
-        break;
+      return;
+    }
+
+    if (interaction.isStringSelectMenu()) {
+      const selectMenuId = interaction.customId.split(":")[0];
+
+      const selectMenuHandler =
+        handlers.selectMenus[selectMenuId as keyof typeof handlers.selectMenus];
+
+      try {
+        await selectMenuHandler(interaction);
+      } catch (error) {
+        console.error(error);
       }
     }
 
